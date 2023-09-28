@@ -1,25 +1,49 @@
+import { UserType } from '.prisma/client';
 import {
   IsString,
   IsNotEmpty,
   IsEmail,
   MinLength,
-  IsNumber,
   Matches,
+  IsEnum,
+  IsOptional,
 } from 'class-validator';
 
 export class SignupDto {
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   name: string;
 
-  //   const phoneNumber = '123-456-7890';
-  @Matches(/^\d{3}-\d{3}-\d{4}$/, {
-    message: 'Enter Phone like this : 123-456-7890',
+  @Matches(/^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/, {
+    message: 'phone must be a valid phone number',
   })
   phone: string;
 
   @IsEmail()
   email: string;
+
+  @IsString()
   @MinLength(5)
   password: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  productKey?: string;
+}
+
+export class SigninDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
+
+export class GenerateProductKeyDto {
+  @IsEmail()
+  email: string;
+
+  @IsEnum(UserType)
+  userType: UserType;
 }
